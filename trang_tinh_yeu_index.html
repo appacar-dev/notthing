@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Trang Tình Yêu</title>
+  <style>
+    :root{
+      --bg1:#ffd6e8;
+      --bg2:#ff9ecb;
+      --accent:#ff4d88;
+      --white: #fff;
+    }
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{
+      background: radial-gradient(circle at 10% 20%,var(--bg1) 0%, transparent 20%),
+                  radial-gradient(circle at 90% 80%,var(--bg2) 0%, transparent 20%),
+                  linear-gradient(180deg,var(--bg1),var(--bg2));
+      overflow:hidden;
+      display:flex;align-items:center;justify-content:center;
+    }
+
+    /* floating hearts in background */
+    .heart-bg{position:fixed;inset:0;pointer-events:none}
+    .heart{position:absolute;opacity:0.12;font-size:48px;transform:translateY(0);animation:float 10s linear infinite}
+    .heart:nth-child(1){left:5%;animation-duration:14s;font-size:60px}
+    .heart:nth-child(2){left:20%;top:15%;animation-duration:18s;font-size:40px}
+    .heart:nth-child(3){left:50%;top:5%;animation-duration:12s;font-size:80px}
+    .heart:nth-child(4){right:18%;top:20%;animation-duration:16s;font-size:50px}
+    .heart:nth-child(5){right:6%;top:40%;animation-duration:20s;font-size:70px}
+    @keyframes float{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-40px) scale(1.05)}100%{transform:translateY(0) scale(1)}}
+
+    /* Card */
+    .card{
+      width:92%;max-width:720px;background:rgba(255,255,255,0.85);border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(0,0,0,0.12);text-align:center;backdrop-filter: blur(6px);
+    }
+    h1{margin:0 0 12px;font-size:28px;color:var(--accent)}
+    p.small{margin:6px 0 18px;color:#7b2c45}
+
+    /* progress hearts */
+    .progress-row{display:flex;gap:12px;justify-content:center;margin-bottom:18px}
+    .single-heart{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#ffe7f2);box-shadow:inset 0 -6px 12px rgba(255,77,136,0.08);position:relative}
+    .single-heart svg{width:28px;height:28px}
+    .single-heart .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(180deg,var(--accent),#ff6fa1);border-radius:0 0 16px 16px;transition:height .3s ease}
+
+    /* center button */
+    .btn{display:inline-block;padding:14px 28px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#ff6fa1);color:var(--white);font-weight:700;border:none;cursor:pointer;box-shadow:0 8px 18px rgba(255,77,136,0.2)}
+    .btn:active{transform:translateY(1px)}
+
+    /* letter area */
+    .letter{margin-top:18px;display:none;flex-direction:column;gap:12px;align-items:center}
+    .letter textarea{width:100%;min-height:160px;border-radius:12px;padding:12px;border:2px dashed #ffd7e7;background:#fff;resize:vertical}
+    .letter .image-preview{max-width:100%;border-radius:12px;display:none;box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+    .small-muted{font-size:13px;color:#7b2c45}
+
+    /* footer */
+    .actions{display:flex;gap:12px;justify-content:center;margin-top:8px}
+    .ghost{background:transparent;border:2px solid var(--accent);color:var(--accent);padding:10px 16px;border-radius:999px;cursor:pointer}
+
+    /* responsive */
+    @media (max-width:480px){.single-heart{width:48px;height:48px}.btn{padding:12px 18px}}
+  </style>
+</head>
+<body>
+  <div class="heart-bg" aria-hidden="true">
+    <div class="heart">❤️</div>
+    <div class="heart">💖</div>
+    <div class="heart">💗</div>
+    <div class="heart">💕</div>
+    <div class="heart">💘</div>
+  </div>
+
+  <div class="card" role="main">
+    <h1>Nhấn tim để làm đầy tình yêu</h1>
+    <p class="small">Nhấn nút ở giữa — mỗi lần nhấn sẽ làm đầy 1 trái tim. Khi đầy sẽ hiện ra 1 bức thư để bạn chèn ảnh và lời nhắn.</p>
+
+    <div class="progress-row" id="progressRow">
+      <!-- 5 trái tim, mỗi trái tim có phần fill ở dưới -->
+      <div class="single-heart" data-index="0">
+        <div class="fill"></div>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7.333-4.667-9.333-7.333C-1.5 9 3 4 7.5 6.5 9.667 7.833 12 11 12 11s2.333-3.167 4.5-4.5C21 4 24.5 9 21.333 13.667 19.333 16.333 12 21 12 21z" fill="#fff"/></svg>
+      </div>
+      <div class="single-heart" data-index="1"><div class="fill"></div><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.333-4.667-9.333-7.333C-1.5 9 3 4 7.5 6.5 9.667 7.833 12 11 12 11s2.333-3.167 4.5-4.5C21 4 24.5 9 21.333 13.667 19.333 16.333 12 21 12 21z" fill="#fff"/></svg></div>
+      <div class="single-heart" data-index="2"><div class="fill"></div><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.333-4.667-9.333-7.333C-1.5 9 3 4 7.5 6.5 9.667 7.833 12 11 12 11s2.333-3.167 4.5-4.5C21 4 24.5 9 21.333 13.667 19.333 16.333 12 21 12 21z" fill="#fff"/></svg></div>
+      <div class="single-heart" data-index="3"><div class="fill"></div><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.333-4.667-9.333-7.333C-1.5 9 3 4 7.5 6.5 9.667 7.833 12 11 12 11s2.333-3.167 4.5-4.5C21 4 24.5 9 21.333 13.667 19.333 16.333 12 21 12 21z" fill="#fff"/></svg></div>
+      <div class="single-heart" data-index="4"><div class="fill"></div><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7.333-4.667-9.333-7.333C-1.5 9 3 4 7.5 6.5 9.667 7.833 12 11 12 11s2.333-3.167 4.5-4.5C21 4 24.5 9 21.333 13.667 19.333 16.333 12 21 12 21z" fill="#fff"/></svg></div>
+    </div>
+
+    <button id="loveBtn" class="btn" aria-pressed="false">💕 Nhấn tim</button>
+
+    <div class="letter" id="letterArea" aria-hidden="true">
+      <h2 style="margin:0;color:#b22a55">Bức thư của bạn</h2>
+      <textarea id="letterText" placeholder="Viết lời nhắn... Ví dụ: Gửi người anh yêu thương nhất..."></textarea>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center;width:100%">
+        <label class="ghost" style="cursor:pointer">Chèn ảnh
+          <input id="imgInput" type="file" accept="image/*" style="display:none">
+        </label>
+        <button id="resetBtn" class="ghost">Làm lại</button>
+        <button id="saveBtn" class="btn">Lưu & Hiện</button>
+      </div>
+
+      <img id="previewImg" class="image-preview" alt="Xem trước ảnh"/>
+      <p class="small-muted">Kéo thả ảnh vào nút 'Chèn ảnh' hoặc nhấn để chọn</p>
+    </div>
+
+  </div>
+
+  <script>
+    (function(){
+      const total = 5;
+      let count = 0;
+      const btn = document.getElementById('loveBtn');
+      const hearts = Array.from(document.querySelectorAll('.single-heart'));
+      const letter = document.getElementById('letterArea');
+      const preview = document.getElementById('previewImg');
+      const imgInput = document.getElementById('imgInput');
+      const resetBtn = document.getElementById('resetBtn');
+      const saveBtn = document.getElementById('saveBtn');
+
+      function updateHearts(){
+        hearts.forEach((h, i)=>{
+          const fill = h.querySelector('.fill');
+          if(i < count){
+            fill.style.height = '100%';
+            h.style.transform = 'scale(1.05)';
+            h.style.transition = 'transform .2s';
+          } else {
+            fill.style.height = '0%';
+            h.style.transform = 'scale(1)';
+          }
+        })
+      }
+
+      btn.addEventListener('click', ()=>{
+        if(count < total){
+          count++;
+          updateHearts();
+        }
+        if(count >= total){
+          // khi đầy, hiện thư
+          letter.style.display = 'flex';
+          letter.setAttribute('aria-hidden','false');
+          btn.setAttribute('aria-pressed','true');
+          btn.textContent = '❤️ Đã đầy! Hiện thư...';
+        }
+      });
+
+      // image preview
+      imgInput.addEventListener('change', (e)=>{
+        const f = e.target.files && e.target.files[0];
+        if(!f) return;
+        const reader = new FileReader();
+        reader.onload = function(ev){
+          preview.src = ev.target.result;
+          preview.style.display = 'block';
+        }
+        reader.readAsDataURL(f);
+      });
+
+      // enable drag & drop onto label
+      const label = imgInput.parentElement;
+      ['dragenter','dragover'].forEach(evt=>{
+        label.addEventListener(evt, (e)=>{e.preventDefault();label.style.transform='scale(1.02)';});
+      });
+      ['dragleave','drop'].forEach(evt=>{
+        label.addEventListener(evt, (e)=>{e.preventDefault();label.style.transform='none';});
+      });
+      label.addEventListener('drop', (e)=>{
+        e.preventDefault();
+        const dt = e.dataTransfer;
+        if(dt && dt.files && dt.files[0]){
+          imgInput.files = dt.files;
+          imgInput.dispatchEvent(new Event('change'));
+        }
+      });
+
+      resetBtn.addEventListener('click', ()=>{
+        count = 0; updateHearts();
+        letter.style.display = 'none';
+        btn.textContent = '💕 Nhấn tim';
+        btn.setAttribute('aria-pressed','false');
+        preview.src = '';
+        preview.style.display = 'none';
+        document.getElementById('letterText').value = '';
+        imgInput.value = '';
+      });
+
+      saveBtn.addEventListener('click', ()=>{
+        // hiện nội dung thư + ảnh bên dưới card (nhanh gọn)
+        const text = document.getElementById('letterText').value || 'Không có lời nhắn...';
+        const container = document.createElement('div');
+        container.style.marginTop = '18px';
+        container.style.textAlign = 'center';
+        container.innerHTML = `<h3 style="margin:6px 0;color:#b22a55">Thư đã lưu</h3><p style="white-space:pre-wrap">${escapeHtml(text)}</p>`;
+        if(preview.src) {
+          const im = document.createElement('img');
+          im.src = preview.src; im.style.maxWidth='100%'; im.style.borderRadius='12px'; im.style.marginTop='10px';
+          container.appendChild(im);
+        }
+        // disable nút lưu để tránh lặp
+        saveBtn.disabled = true; saveBtn.textContent = 'Đã lưu';
+        document.querySelector('.card').appendChild(container);
+      });
+
+      function escapeHtml(s){ return s.replace(/[&<>"']/g, function(m){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]}); }
+
+      // keyboard accessibility: nhấn Enter trên button
+      btn.addEventListener('keyup', (e)=>{ if(e.key === 'Enter') btn.click(); });
+
+      // init
+      updateHearts();
+    })();
+  </script>
+</body>
+</html>
